@@ -20,3 +20,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/store-purchase-product-data', [PurchaseInvoiceController::class, 'storePurchaseProductData'])->name('store-purchase-product-data');
+

@@ -256,7 +256,7 @@
                         </div>
                     
                         <!-- Net Profit -->
-                         {{-- <div class="col-md-3 mb-3">
+                         {{-- <div class="col-md-3 mb-3">s
                             <div class="uni-card" style="background-color: #72BAA9">
                                 <i class="card-icon-indicator mdi mdi-finance bg-inverse-icon-danger p-2 rounded-circle text-white"></i>
                                 <div class="uni-card-content">

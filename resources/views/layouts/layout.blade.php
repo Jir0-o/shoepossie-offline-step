@@ -9,12 +9,12 @@
     @php
     $banner_Information = \App\Models\BannerInformation::first();
     @endphp
-    <title>{{ $banner_Information->banner_name}}</title>
+    <title>{{ $banner_Information->banner_name ?? 'Breeze Admin' }}</title>
     <link rel="stylesheet" href="{{ asset('backend/assets/vendors/mdi/css/materialdesignicons.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('backend/assets/vendors/flag-icon-css/css/flag-icon.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('backend/assets/vendors/css/vendor.bundle.base.css') }}" />
     <link rel="stylesheet" href="{{ asset('backend/assets/vendors/font-awesome/css/font-awesome.min.css') }}" />
-    <link rel="shortcut icon" href="{{ $banner_Information->banner_logo }}" type="image/x-icon">
+    <link rel="shortcut icon" href="{{ $banner_Information->banner_logo ?? '' }}" type="image/x-icon">
 
     <link href="{{ asset('assets/css/all.min.css') }}" rel="stylesheet">
 

@@ -19,7 +19,7 @@
                     <div class="tiles dark"></div>
                 </div>
             </div>
-            @include('dashboard.pertials.topNav')
+            @include('dashboard.pertials.topNav') 
             <div class="main-panel">
                 <div class="content-wrapper">
                     <div class="card p-4">

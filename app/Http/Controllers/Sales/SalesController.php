@@ -741,6 +741,7 @@ class SalesController extends Controller
             $TempPaymentdata = CartTemporaryPayment::join('cart_payment_methods', 'cart_payment_methods.payment_method_id', '=', 'cart_temporary_payment.payment_method_id')
             ->where('cart_temporary_id', $request->temp_cart_id)
             ->select('cart_payment_methods.payment_method_symbol','cart_temporary_payment.*')
+            ->orderBy('cart_temporary_payment.cart_temporary_id', 'desc')
             ->get();
 
             $totalDiscount =  $TempPaymentdata->sum('discount_amount');

@@ -10,9 +10,9 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
     <div class="text-center sidebar-brand-wrapper d-flex align-items-center mb-5 mt-3">
         <a class="sidebar-brand brand-logo" href="{{ route('backoffice.home') }}"><img style="height:100px; width:100px;"
-                src="{{ $banner_Information->banner_logo }}" alt="logo" /></a>
+                src="{{ $banner_Information->banner_logo ?? '' }}" alt="logo" /></a>
         <a class="sidebar-brand brand-logo-mini pl-4 pt-3" href="{{ route('backoffice.home') }}"><img
-                src="{{ $banner_Information->banner_logo }}" alt="logo" /></a>
+                src="{{ $banner_Information->banner_logo ?? '' }}" alt="logo" /></a>
     </div>
     <ul class="nav">
         <li class="nav-item nav-profile">

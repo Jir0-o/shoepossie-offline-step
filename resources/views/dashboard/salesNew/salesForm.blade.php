@@ -1085,10 +1085,10 @@
             var paid_amount = parseFloat($('#payable_amount').val());
             var discount = $('#disc').val();
             var subtotal = $('#subtotal').text();
-            if (paid_amount <= 0 || isNaN(paid_amount)) {
-                swal("No Payment Required", "Payable amount is already settled.", "info");
-                return;
-            }
+            // if (paid_amount <= 0 || isNaN(paid_amount)) {
+            //     swal("No Payment Required", "Payable amount is already settled.", "info");
+            //     return;
+            // }
             if(/%$/.test(discount)){
                 var getDiscountValue = parseFloat(discount)/100;   //input value  value =  0.1/100 = 0.1
                 var dis = parseInt(subtotal)*getDiscountValue;

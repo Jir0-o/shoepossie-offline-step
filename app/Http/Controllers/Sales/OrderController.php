@@ -230,7 +230,7 @@ class OrderController extends Controller
             ];
 
             try {
-                $response = Http::post('###', $postData);
+                $response = Http::post('http://127.0.0.1:8001/sync_data', $postData);
 
                 if ($response->successful()) {
                     DB::table('log_table')
