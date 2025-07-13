@@ -69,53 +69,75 @@ $banner_Information= \App\Models\BannerInformation::first();
                                                 <th>Paid</th>
                                                 <th>Created By</th>
                                                 <th>Customer</th>
+                                                <th>Sales Man</th>
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @php $i=1; @endphp
+                                            @php $i = 1; @endphp
                                             @foreach ($CartInfo as $user)
-                                            <tr>
-                                                <td value="{{$user->cart_id}}" class="also checkboxonly-{{$i}}"></td>
-                                                <td style="width: 10px;">{{ $i++ }}</td>
-                                                <td style="width: 60px;">{{ $user->cart_id }}</td>
-                                                <td style="width: 250px;">
-                                                    @php
+                                                @php
                                                     $cart_item_data = \App\Models\CartItem::join('products', 'products.product_id', '=', 'cart_items.product_id')
-                                                    ->join('product_materials', 'product_materials.product_material_id', '=', 'cart_items.product_id')
-                                                    ->join('sizes', 'sizes.size_id', '=', 'cart_items.size_id')
-                                                    ->join('colors', 'colors.colors_id', '=', 'cart_items.colors_id')
-                                                    ->join('brand_types', 'brand_types.brand_type_id', '=', 'product_materials.brand_type_id')
-                                                    ->where('cart_items.cart_id', $user->cart_id)
-                                                    ->select('cart_items.quantity', 'products.product_name','cart_items.barcode','product_materials.product_material_name','colors.colors_name','sizes.size_name','brand_types.brand_type_name')
-                                                    ->get();
-                                                    @endphp
-                                                    @foreach ($cart_item_data as $itemdata)
-                                                    <div class="row pr-3 pt-2">
-                                                        <div class="col-12 col-lg-6 col-md-6 ">
-                                                            {{ $itemdata->barcode }}/( {{ $itemdata->quantity }})/{{$itemdata->brand_type_name}}
-                                                        </div>
-                                                        {{-- <small>({{ $itemdata->colors_name }}/{{$itemdata->size_name }})</small> --}}
-                                                        {{-- <div class="col-12 col-lg-6 col-md-6 ml-1">
-                                                            {{ $itemdata->quantity }}
-                                                    </div> --}}
-                                </div>
-                                @endforeach
-                                </td>
-                                <td style="width: 60px;">{{ $user->payment_method }}</td>
-                                <td style="width: 60px;">{{ $user->cart_date }}</td>
-                                <td style="width: 60px;" class="text-right">{{ $user->total_cart_amount }}</td>
-                                <td style="width: 60px;" class="text-right">{{ $user->total_discount }}</td>
-                                <td style="width: 60px;" class="text-right">{{ $user->paid_amount }}</td>
-                                <td style="width: 60px;">{{ $user->created_by_name }}</td>
+                                                        ->join('product_materials', 'product_materials.product_material_id', '=', 'cart_items.product_id')
+                                                        ->join('sizes', 'sizes.size_id', '=', 'cart_items.size_id')
+                                                        ->join('colors', 'colors.colors_id', '=', 'cart_items.colors_id')
+                                                        ->join('brand_types', 'brand_types.brand_type_id', '=', 'product_materials.brand_type_id')
+                                                        ->join('cart_informtion', 'cart_informtion.cart_id', '=', 'cart_items.cart_id')
+                                                        ->join('backoffice_login as users', 'users.login_id', '=', 'cart_informtion.waiter_id') 
+                                                        ->where('cart_items.cart_id', $user->cart_id)
+                                                        ->select(
+                                                            'cart_items.quantity',
+                                                            'products.product_name',
+                                                            'cart_items.barcode',
+                                                            'product_materials.product_material_name',
+                                                            'colors.colors_name',
+                                                            'sizes.size_name',
+                                                            'brand_types.brand_type_name',
+                                                            'cart_items.cart_id',
+                                                            'cart_informtion.waiter_id',
+                                                            'users.full_name as waiter_name'
+                                                        )
+                                                        ->get();
+                                                @endphp
 
-                                <td>{{ $user->mobile_no }}</td>
+                                                <tr>
+                                                    <td value="{{ $user->cart_id }}" class="also checkboxonly-{{ $i }}"></td>
+                                                    <td style="width: 10px;">{{ $i++ }}</td>
+                                                    <td style="width: 60px;">{{ $user->cart_id }}</td>
 
-                                <td><a target="_blank" class="brn" href="{{ route('backoffice.printInvoice', $user->cart_id) }}"><img src="{{ asset('backend/printer.webp') }}" alt="print"></a>
-                                </td>
-                                </tr>
-                                @endforeach
-                                </tbody>
+                                                    {{-- Article/Qty/Brand Column --}}
+                                                    <td style="width: 250px;">
+                                                        @foreach ($cart_item_data as $itemdata)
+                                                            <div class="row pr-3 pt-2">
+                                                                <div class="col-12 col-lg-6 col-md-6">
+                                                                    {{ $itemdata->barcode }}/({{ $itemdata->quantity }})/{{ $itemdata->brand_type_name }}
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
+                                                    </td>
+
+                                                    <td style="width: 60px;">{{ $user->payment_method }}</td>
+                                                    <td style="width: 60px;">{{ $user->cart_date }}</td>
+                                                    <td style="width: 60px;" class="text-right">{{ $user->total_cart_amount }}</td>
+                                                    <td style="width: 60px;" class="text-right">{{ $user->total_discount }}</td>
+                                                    <td style="width: 60px;" class="text-right">{{ $user->paid_amount }}</td>
+                                                    <td style="width: 60px;">{{ $user->created_by_name }}</td>
+                                                    <td>{{ $user->mobile_no }}</td>
+
+                                                    {{-- Waiter (Salesman) --}}
+                                                    <td>
+                                                        {{ $cart_item_data->first()->waiter_name ?? 'N/A' }}
+                                                    </td>
+
+                                                    <td>
+                                                        <a target="_blank" class="brn" href="{{ route('backoffice.printInvoice', $user->cart_id) }}">
+                                                            <img src="{{ asset('backend/printer.webp') }}" alt="print">
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+
                                 <tfoot>
 
                                     <tr>
@@ -130,6 +152,7 @@ $banner_Information= \App\Models\BannerInformation::first();
                                         <th>Paid</th>
                                         <th>Created By</th>
                                         <th>Customer</th>
+                                        <th>Sales Man</th>
                                         <th>Action</th>
                                     </tr>
                                     {{-- <tr>

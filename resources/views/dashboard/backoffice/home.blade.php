@@ -96,6 +96,25 @@
                             ->whereMonth('pur_date', $currentMonth)
                             ->select('purchase_info.*',)
                             ->get();
+
+                        $dailySalesman = \App\Models\CartInformtion::join('backoffice_login', 'cart_informtion.waiter_id', '=', 'backoffice_login.login_id')
+                            ->select('waiter_id','full_name', DB::raw('SUM(final_total_amount) as daily_sales'))
+                            ->whereDate('cart_date', today()) 
+                            ->groupBy('waiter_id', 'full_name')
+                            ->get();
+
+                        // Monthly Salesman Query
+                        $monthlySalesman = \App\Models\CartInformtion::join('backoffice_login', 'cart_informtion.waiter_id', '=', 'backoffice_login.login_id')
+                            ->select('waiter_id','full_name',DB::raw('SUM(final_total_amount) as monthly_sales'))
+                            ->whereMonth('cart_date', now()->month)
+                            ->whereYear('cart_date', now()->year)
+                            ->groupBy('waiter_id', 'full_name')
+                            ->get();
+
+                        // Total Daily Sales (for showing in center of pie or separately)
+                        $totalDailySales = $dailySalesman->sum('daily_sales');
+                        $totalMonthlySales = $monthlySalesman->sum('monthly_sales');
+
                     @endphp
 
                     @php
@@ -378,7 +397,28 @@
                                 </div>
                             </div>
                         </div>
-                                            
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card p-3">
+                                <h6 class="mb-3">Daily Sales by Salesman</h6>
+                                <canvas id="dailySalesBar"></canvas>
+                                <div class="mt-2 text-center">
+                                    <strong>Total Sales Today:</strong> {{ number_format($totalDailySales, 2) }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card p-3">
+                                <h6 class="mb-3">Monthly Sales by Salesman</h6>
+                                <canvas id="monthlySalesPie"></canvas>
+                                <div class="mt-2 text-center">
+                                    <strong>Total Sales This Month:</strong> {{ number_format($totalMonthlySales, 2) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>         
+                    <br>                               
                       <div class="row">
                         <div class="col-lg-6 grid-margin stretch-card">
                           <div class="card">
@@ -409,6 +449,7 @@
 @endsection
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     function unsync_data_count() {
         $.ajax({
@@ -425,6 +466,107 @@
     }
     
     $(document).ready(function () {
+
+
+    const chartColors = [
+        '#4e73df', // blue
+        '#1cc88a', // green
+        '#36b9cc', // teal
+        '#f6c23e', // yellow
+        '#e74a3b', // red
+        '#858796', // gray
+        '#fd7e14', // orange
+        '#6f42c1', // purple
+        '#20c9a6', // cyan
+        '#f9a602', // gold
+    ];
+
+    // Data
+    const dailySalesLabels = @json($dailySalesman->pluck('full_name'));
+    const dailySalesData = @json($dailySalesman->pluck('daily_sales'));
+    const totalDailySales = {{ $totalDailySales }};
+
+    const monthlySalesLabels = @json($monthlySalesman->pluck('full_name'));
+    const monthlySalesData = @json($monthlySalesman->pluck('monthly_sales'));
+    const totalMonthlySales = {{ $totalMonthlySales }};
+
+    // Center Text Plugin for the Doughnut
+    const centerText = {
+        id: 'centerText',
+        afterDraw(chart, args, options) {
+            const { ctx, chartArea } = chart;
+            if (!chartArea) return;
+            const x = (chartArea.left + chartArea.right) / 2;
+            const y = (chartArea.top + chartArea.bottom) / 2;
+            ctx.save();
+            ctx.font = 'bold 14px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#222';
+            ctx.fillText('Total', x, y - 18);
+            ctx.font = 'bold 14px Arial';
+            ctx.fillStyle = '#27ae60';
+            ctx.fillText('৳' + totalMonthlySales.toLocaleString(), x, y + 16); // Note: show monthly total
+            ctx.restore();
+        }
+    };
+
+    // --- Bar Chart for Daily Sales ---
+    new Chart(document.getElementById('dailySalesBar'), {
+        type: 'bar',
+        data: {
+            labels: dailySalesLabels,
+            datasets: [{
+                label: 'Daily Sales',
+                data: dailySalesData,
+                borderWidth: 1,
+                backgroundColor: chartColors,
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: 'Salesman-wise Daily Sales'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { stepSize: 1000 }
+                }
+            }
+        }
+    });
+
+    // --- Doughnut Chart for Monthly Sales ---
+    new Chart(document.getElementById('monthlySalesPie'), {
+        type: 'doughnut',
+        data: {
+            labels: monthlySalesLabels,
+            datasets: [{
+                label: 'Monthly Sales',
+                data: monthlySalesData,
+                borderWidth: 2,
+                backgroundColor: chartColors,
+            }]
+        },
+        options: {
+            responsive: true,
+            cutout: '70%',
+            plugins: {
+                legend: { position: 'top' },
+                title: {
+                    display: true,
+                    text: 'Salesman-wise Monthly Sales'
+                }
+            }
+        },
+        plugins: [centerText]
+    });
+
         unsync_data_count(); // Call the function to fetch the count on page load
         $('#sync-btn').on('click', function () {
             var $btn = $(this);

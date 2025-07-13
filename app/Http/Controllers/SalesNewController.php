@@ -13,6 +13,7 @@ use App\Models\ConsumerLogin;
 use App\Models\FinalStockTable;
 use App\Models\ProductMaterial;
 use App\Models\PurchaseDetail;
+use App\Models\BackofficeLogin;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -36,8 +37,10 @@ class SalesNewController extends Controller
         // get logo 
         $banner_logo= \App\Models\BannerInformation::first();
 
+        $salesMan = BackofficeLogin::where('role_id', 6)->get();
+
         // return $pur_info;
-        return view('dashboard.salesNew.salesForm',compact(['products','pur_info','pur_batch','getCartPaymentMethod','banner_logo']));
+        return view('dashboard.salesNew.salesForm',compact(['products','pur_info','pur_batch','getCartPaymentMethod','banner_logo','salesMan']));
     }
 
 

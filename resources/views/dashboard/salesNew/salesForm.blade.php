@@ -318,6 +318,18 @@
                                                                 </select>
                                                             </td>
                                                         </tr>
+                                                        <tr>
+                                                            <td class="p-1">Sales Man</td>
+                                                            <td class="p-1">
+                                                                <select required name="sales_man" id="sales_man" class="form-control">
+                                                                    <option selected disabled value="">Select Sales Man</option>
+                                                                    @foreach ($salesMan as $sales)
+                                                                        <option value="{{$sales->login_id}}">{{$sales->full_name}}
+                                                                        </option>
+                                                                    @endforeach
+                                                                </select>
+                                                            </td>
+                                                        </tr>
                                                         <tr id="type_wise"></tr>
                                                         <tr id="exchange_wize">
 
@@ -1293,9 +1305,16 @@
         });
 
 
-        // enter event 
         $("#mobile_no").keydown(function (e) {
             if (e.keyCode == 13) {
+                e.preventDefault();
+                $('#sales_man').focus();
+            }
+        });
+
+        $("#sales_man").keydown(function (e) {
+            if (e.keyCode == 13) {
+                e.preventDefault(); 
                 $('#disc').focus();
             }
         });
