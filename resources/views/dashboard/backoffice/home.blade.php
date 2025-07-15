@@ -398,7 +398,7 @@
                             </div>
                         </div>
 
-                    <div class="row">
+                    {{-- <div class="row">
                         <div class="col-md-6">
                             <div class="card p-3">
                                 <h6 class="mb-3">Daily Sales by Salesman</h6>
@@ -417,7 +417,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>         
+                    </div>          --}}
                     <br>                               
                       <div class="row">
                         <div class="col-lg-6 grid-margin stretch-card">

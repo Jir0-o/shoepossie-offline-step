@@ -950,7 +950,7 @@ class SalesController extends Controller
         } else {
             $CartInformtion_Update->cart_status = 1;
         }
-        $CartInformtion_Update->waiter_id = $request->sales_man;
+        // $CartInformtion_Update->waiter_id = $request->sales_man;
         $save = $CartInformtion_Update->save();
 
         $customer_payment = new CustomerPayment();

@@ -318,7 +318,7 @@
                                                                 </select>
                                                             </td>
                                                         </tr>
-                                                        <tr>
+                                                        {{-- <tr>
                                                             <td class="p-1">Sales Man</td>
                                                             <td class="p-1">
                                                                 <select required name="sales_man" id="sales_man" class="form-control">
@@ -329,7 +329,7 @@
                                                                     @endforeach
                                                                 </select>
                                                             </td>
-                                                        </tr>
+                                                        </tr> --}}
                                                         <tr id="type_wise"></tr>
                                                         <tr id="exchange_wize">
 
